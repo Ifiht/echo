@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     unsigned short servport;/* host port */
     char msg[BUFFER];/* bounceback message */
     char *IP;/* IP address of target */
-    char *s1;/* String to send to echo server */
+    char *s1;/* string sent to target */
 
     int dorway;/* socket */
 
