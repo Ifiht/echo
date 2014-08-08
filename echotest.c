@@ -1,13 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <arpa/inet.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
 
-#define BUFFER 800/* String buffer size */
+
+#define BUFFER 128/* String buffer size */
 
 
 int main(int argc, char *argv[])
@@ -62,20 +59,20 @@ int main(int argc, char *argv[])
     if ((dorway = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
     {
         printf("Problem creating server socket\n");
-        exit(4);
+        exit(3);
     }
 
     if (bind(dorway, (struct sockaddr *) &serv, sizeof(serv)) < 0)
     {
         printf("Problem binding\n");
-        exit(5);
+        exit(4);
     }
 
     if (sendto(dorway, s1, echoStringLen, 0, (struct sockaddr *)
                &target, sizeof(target)) != echoStringLen)
     {
         printf("Could not send string.\n");
-        exit(6);
+        exit(5);
     }
 
 
@@ -83,6 +80,7 @@ int main(int argc, char *argv[])
     int i = 0;
     while (1)
     {
+        memset(msg, 0, BUFFER);
         n = recvfrom(dorway, msg, BUFFER, 0, (struct sockaddr *) &dest, &destsize);
         printf("msg%i: %s", i, msg);
         sendto(dorway, msg, n, 0, (struct sockaddr *) &dest, destsize);
