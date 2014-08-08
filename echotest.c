@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     int dorway;/* socket */
 
     int n;/* message byte size */
-    int echoStringLen;/* Length of string to echo */
+    int s1len;/* length of initial string */
 
     IP = argv[1];
     s1 = argv[2];
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
 
     /* Check for common errors */
-    if ((echoStringLen = strlen(s1)) > BUFFER)
+    if ((s1len = strlen(s1)) > BUFFER)
     {
         printf("Echo string too long.\n");
         exit(2);
@@ -68,8 +68,8 @@ int main(int argc, char *argv[])
         exit(4);
     }
 
-    if (sendto(dorway, s1, echoStringLen, 0, (struct sockaddr *)
-               &target, sizeof(target)) != echoStringLen)
+    if (sendto(dorway, s1, s1len, 0, (struct sockaddr *)
+               &target, sizeof(target)) != s1len)
     {
         printf("Could not send string.\n");
         exit(5);
