@@ -4,7 +4,7 @@
 #include <arpa/inet.h>
 
 
-#define BUFFER 128/* String buffer size */
+#define BUFFER 64/* String buffer size */
 
 
 int main(int argc, char *argv[])
@@ -18,19 +18,20 @@ int main(int argc, char *argv[])
     struct sockaddr_in target;/* socket specs of target */
     struct sockaddr_in dest;/* socket specs of respondant */
     struct sockaddr_in serv;/* socket specs of host */
+    unsigned long long i = 0;/* number prefix for console printout */
     unsigned short destport;/* target port */
     unsigned short servport;/* host port */
-    char msg[BUFFER];/* bounceback message */
+    char msg[BUFFER];/* message string */
     char *IP;/* IP address of target */
-    char *s1;/* string sent to target */
 
     int dorway;/* socket */
 
-    int n;/* message byte size */
-    int s1len;/* length of initial string */
+    int b;/* message byte size */
+    int msglen;/* length of initial string */
+    unsigned int destsize = sizeof(dest);/* address length */
 
     IP = argv[1];
-    s1 = argv[2];
+    strncpy(msg, argv[2], BUFFER);
     servport = atoi(argv[4]);
     destport = atoi(argv[3]);
 
@@ -46,19 +47,17 @@ int main(int argc, char *argv[])
     serv.sin_addr.s_addr = htonl(INADDR_ANY);
     serv.sin_port = htons(servport);
 
-    unsigned int destsize = sizeof(dest);
-
 
     /* Check for common errors */
-    if ((s1len = strlen(s1)) > BUFFER)
+    if ((msglen = strlen(msg)) > BUFFER)
     {
-        printf("Echo string too long.\n");
+        printf("String too long.\n");
         exit(2);
     }
 
     if ((dorway = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
     {
-        printf("Problem creating server socket\n");
+        printf("Problem creating socket\n");
         exit(3);
     }
 
@@ -68,8 +67,8 @@ int main(int argc, char *argv[])
         exit(4);
     }
 
-    if (sendto(dorway, s1, s1len, 0, (struct sockaddr *)
-               &target, sizeof(target)) != s1len)
+    if (sendto(dorway, msg, msglen, 0, (struct sockaddr *)
+               &target, sizeof(target)) != msglen)
     {
         printf("Could not send string.\n");
         exit(5);
@@ -77,13 +76,12 @@ int main(int argc, char *argv[])
 
 
     /* start listening */
-    int i = 0;
     while (1)
     {
         memset(msg, 0, BUFFER);
-        n = recvfrom(dorway, msg, BUFFER, 0, (struct sockaddr *) &dest, &destsize);
-        printf("msg%i: %s", i, msg);
-        sendto(dorway, msg, n, 0, (struct sockaddr *) &dest, destsize);
+        b = recvfrom(dorway, msg, BUFFER, 0, (struct sockaddr *) &dest, &destsize);
+        printf("msg%llu: %s\n", i, msg);
+        sendto(dorway, msg, b, 0, (struct sockaddr *) &dest, destsize);
         i++;
     }
     return 0;
