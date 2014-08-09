@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 
 
     /* Check for common errors */
-    if ((msglen = strlen(msg)) > BUFFER)
+    if ((msglen = strlen(argv[2])) > BUFFER)
     {
         printf("String too long.\n");
         exit(2);
