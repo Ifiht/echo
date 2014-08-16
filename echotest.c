@@ -31,7 +31,6 @@ int main(int argc, char *argv[])
     unsigned int destsize = sizeof(dest);/* address length */
 
     IP = argv[1];
-    strncpy(msg, argv[2], BUFFER);
     servport = atoi(argv[4]);
     destport = atoi(argv[3]);
 
@@ -54,6 +53,7 @@ int main(int argc, char *argv[])
         printf("String too long.\n");
         exit(2);
     }
+    else strncpy(msg, argv[2], BUFFER);
 
     if ((dorway = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
     {
