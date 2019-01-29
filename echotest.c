@@ -1,34 +1,44 @@
+/*===========================================\
+ECHOTEST v0.3
+Simple UDP reliability test, sends initial UDP
+message and repeats back whatever is heard. 
+When started on two separate machines they
+will pass the message back and forth until 
+it is dropped somewhere in between. The 
+counter will show the total number of
+successful "echos".
+\===========================================*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <arpa/inet.h>
 
 
-#define BUFFER 64/* String buffer size */
+#define BUFFER 64// String buffer size
 
 
 int main(int argc, char *argv[])
 {
-    if ((argc != 5))/* Test for correct number of arguments */
+    if ((argc != 5))// Test for correct number of arguments
     {
         fprintf(stderr, "Usage: %s [IP] [String] [Target Port] [Host Port]\n", argv[0]);
         exit(1);
     }
     /* Construct variables */
-    struct sockaddr_in target;/* socket specs of target */
-    struct sockaddr_in dest;/* socket specs of respondant */
-    struct sockaddr_in serv;/* socket specs of host */
-    unsigned long long i = 0;/* number prefix for console printout */
-    unsigned short destport;/* target port */
-    unsigned short servport;/* host port */
-    char msg[BUFFER];/* message string */
-    char *IP;/* IP address of target */
+    struct sockaddr_in target;// socket specs of target
+    struct sockaddr_in dest;// socket specs of respondant
+    struct sockaddr_in serv;// socket specs of host
+    unsigned long long i = 0;// number prefix for console printout
+    unsigned short destport;// target port
+    unsigned short servport;// host port
+    char msg[BUFFER];// message string
+    char *IP;// IP address of target
 
-    int dorway;/* socket */
+    int dorway;// socket
 
-    int b;/* message byte size */
-    int msglen;/* length of initial string */
-    unsigned int destsize = sizeof(dest);/* address length */
+    int b;// message byte size
+    int msglen;// length of initial string
+    unsigned int destsize = sizeof(dest);// address length
 
     IP = argv[1];
     servport = atoi(argv[4]);
